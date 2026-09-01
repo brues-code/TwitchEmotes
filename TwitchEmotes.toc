@@ -3,7 +3,7 @@
 ## IconTexture: Interface\AddOns\TwitchEmotes\Emotes\1337.tga
 ## Notes: Adds popular Twitch & Discord emotes to your chat. Developed by Ren - 1.12.1 backport by Brues
 ## Author: Ren
-## Version: v2
+## Version: @project-version@
 ## SavedVariables: Emoticons_Settings, Emoticons_Eyecandy, TwitchEmoteStatistics
 ## OptionalDeps: LibStub
 ## LoadSavedVariablesFirst: 1
