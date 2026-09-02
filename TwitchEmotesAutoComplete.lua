@@ -108,6 +108,7 @@ for i = 1, MAX_SUGGESTIONS do
     b:Hide()
     btns[i] = b
 end
+popup.btns = btns   -- exposed so TwitchEmotesAnimator can crop each icon's frame
 
 -- ── Show / hide / select helpers ───────────────────────────────────────────────
 
@@ -152,8 +153,20 @@ local function showPopup(eb, results)
             local key   = emoticons[name] or name
             local entry = defaultpack[key]
             local tex   = entry and entry:match("(.*%.tga)")
-            if tex then b.ico:SetTexture(tex); b.ico:Show()
-            else        b.ico:Hide() end
+            if tex then
+                b.ico:SetTexture(tex)
+                -- animated emote sheets crop to a frame; the animator advances it
+                b.animdata = TwitchEmotes_animation_metadata and TwitchEmotes_animation_metadata[tex]
+                if b.animdata then
+                    b.ico:SetTexCoord(0, 1, 0, b.animdata.frameHeight / b.animdata.imageHeight)
+                else
+                    b.ico:SetTexCoord(0, 1, 0, 1)
+                end
+                b.ico:Show()
+            else
+                b.ico:Hide()
+                b.animdata = nil
+            end
             b:Show()
         else
             b:Hide()

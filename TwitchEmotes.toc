@@ -26,3 +26,4 @@ Emotes.lua
 TwitchEmotes.lua
 TwitchEmotesAutoComplete.lua
 TwitchEmotesStats.lua
+TwitchEmotesAnimator.lua

@@ -68,11 +68,26 @@ end
 local function emoteTexStr(emote, size)
     local tga = emoteTga(emote)
     if not tga then return "" end
+    -- animated emote sheets: crop to frame 0 (the animator advances the frame)
+    local a = TwitchEmotes_animation_metadata and TwitchEmotes_animation_metadata[tga]
+    if a then
+        return "|T" .. tga .. ":" .. size .. ":" .. size .. ":0:0:" ..
+               a.imageWidth .. ":" .. a.imageHeight .. ":0:" ..
+               a.frameWidth .. ":0:" .. a.frameHeight .. "|t"
+    end
     return "|T" .. tga .. ":" .. size .. ":" .. size .. "|t"
 end
 
 local function setTopEmote(tex, emote)
-    tex:SetTexture(emoteTga(emote) or FALLBACK_TEX)
+    local tga = emoteTga(emote)
+    tex:SetTexture(tga or FALLBACK_TEX)
+    -- store animdata so the animator can crop frames; frame 0 as the base
+    tex.animdata = tga and TwitchEmotes_animation_metadata and TwitchEmotes_animation_metadata[tga]
+    if tex.animdata then
+        tex:SetTexCoord(0, 1, 0, tex.animdata.frameHeight / tex.animdata.imageHeight)
+    else
+        tex:SetTexCoord(0, 1, 0, 1)
+    end
 end
 
 local function updateList(lines, sf, keys, statIdx)
