@@ -2,3 +2,4 @@ package-as: TwitchEmotes
 
 ignore:
   - .luarc.json
+  - tools

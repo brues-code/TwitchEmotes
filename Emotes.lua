@@ -4039,7 +4039,7 @@ defaultpack={
 	["peepoJail"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoJail.tga:28:28",
 	["peepoNotes"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoNotes.tga:28:28",
 	["Awakge"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\Awakge.tga:28:28",
-	["Nerdge"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\Nerdge.tga:28:28",
+	["Nerdge"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\Nerdge.tga:28:28:0:0:64:1024:0:32:0:32",
 	[":shy:"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\shy.tga:28:28:0:0:32:64:0:32:0:32",
 	["peepoSmash"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoSmash.tga:28:28:0:0:32:256:0:32:0:32",
 	["peepoBye"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoBye.tga:28:28",
@@ -9031,4 +9031,5 @@ TwitchEmotes_animation_metadata = {
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\LETSGOOO.tga"] = {["nFrames"] = 11, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=512, ["framerate"] = 20},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\pedro.tga"] = {["nFrames"] = 48, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 10},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepofeet.tga"] = {["nFrames"] = 3, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=128, ["framerate"] = 15},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\Nerdge.tga"] = {["nFrames"] = 36, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 11},
 }
