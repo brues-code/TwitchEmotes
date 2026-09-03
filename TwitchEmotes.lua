@@ -501,6 +501,49 @@ end
 local EmoticonChatFrameDropDown = CreateFrame("Frame", "EmoticonChatFrameDropDown", UIParent, "UIDropDownMenuTemplate")
 UIDropDownMenu_Initialize(EmoticonChatFrameDropDown, Emoticons_LoadChatFrameDropdown, "MENU", 1)
 
+-- ToggleDropDownMenu only tests whether a list runs off the bottom or the
+-- right of the screen, flips its anchor once and never re-measures, so a list
+-- flipped upwards overflows the top instead (a 40-row emote page opened from a
+-- submenu halfway down the screen), and its off-screen-X test compares the
+-- list's own coordinates against pixel widths, flipping submenus left even
+-- when that pushes them past the left edge. Nudge our own lists back inside
+-- the screen after it has positioned them; the emote pages are at most
+-- 40 * UIDROPDOWNMENU_BUTTON_HEIGHT + borders tall, so they always fit.
+local function Emoticons_ClampDropDownList(level)
+  local list = _G["DropDownList"..level];
+  if (not list or not list:IsShown()) then return end
+  local scale = list:GetEffectiveScale();
+  local uiScale = UIParent:GetEffectiveScale();
+  local left, right = list:GetLeft(), list:GetRight();
+  local bottom, top = list:GetBottom(), list:GetTop();
+  if (not left or not bottom) then return end
+  -- Everything below is in screen pixels, since the list carries a scale of
+  -- its own (ToggleDropDownMenu sets it from the uiscale cvar).
+  left, right, bottom, top = left * scale, right * scale, bottom * scale, top * scale;
+  local screenWidth = GetScreenWidth() * uiScale;
+  local screenHeight = GetScreenHeight() * uiScale;
+  local dx, dy = 0, 0;
+  if (right > screenWidth) then dx = screenWidth - right end
+  if (left + dx < 0) then dx = -left end          -- a list wider than the screen keeps its left edge
+  if (top > screenHeight) then dy = screenHeight - top end
+  if (bottom + dy < 0) then dy = -bottom end
+  if (dx == 0 and dy == 0) then return end
+  -- UIParent's BOTTOMLEFT is screen pixel (0,0); SetPoint offsets are in the
+  -- units of the frame being moved, so scale the corrected position back down.
+  list:ClearAllPoints();
+  list:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", (left + dx) / scale, (top + dy) / scale);
+end
+
+local Emoticons_Orig_ToggleDropDownMenu = ToggleDropDownMenu;
+function ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, yOffset)
+  Emoticons_Orig_ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, yOffset);
+  -- Submenus are opened by the list buttons themselves with no dropDownFrame,
+  -- so identify ours by the menu ToggleDropDownMenu just recorded as open.
+  if (UIDROPDOWNMENU_OPEN_MENU == "EmoticonChatFrameDropDown") then
+    Emoticons_ClampDropDownList(level or 1);
+  end
+end
+
 do
     local pending, seen = {}, {}
     for _, group in ipairs(dropdown_options) do
