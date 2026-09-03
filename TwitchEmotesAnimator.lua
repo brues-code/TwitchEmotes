@@ -40,11 +40,14 @@ local function CropToCurrentFrame(tex, animdata)
                     top / animdata.imageHeight, bottom / animdata.imageHeight)
 end
 
+-- The engine splits the payload on ':' and atoi's each field, so a coordinate
+-- carrying a decimal point silently truncates and crops the wrong rect (a
+-- fractional framerate is enough to leak one in). Format them as integers.
 local function BuildFrameString(imagepath, animdata, framenum, w, h)
     local left, right, top, bottom = GetFrameRect(animdata, framenum)
-    return "|T" .. imagepath .. ":" .. w .. ":" .. h .. ":0:0:" ..
-           animdata.imageWidth .. ":" .. animdata.imageHeight .. ":" ..
-           left .. ":" .. right .. ":" .. top .. ":" .. bottom .. "|t"
+    return ("|T%s:%d:%d:0:0:%d:%d:%d:%d:%d:%d|t"):format(imagepath, w, h,
+                         animdata.imageWidth, animdata.imageHeight,
+                         left, right, top, bottom)
 end
 
 -- escape the pattern-magic chars that can appear in an emote escape (paths use

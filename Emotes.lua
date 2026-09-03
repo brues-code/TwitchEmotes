@@ -8927,7 +8927,7 @@ TwitchEmotes_animation_metadata = {
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Clap.tga"] = {["nFrames"] = 2, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=64, ["framerate"] = 6},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\modCheck.tga"] = {["nFrames"] = 28, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=1024, ["framerate"] = 9},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\goinginsane.tga"] = {["nFrames"] = 47, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 25},
-	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\catJAM.tga"] = {["nFrames"] = 60, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 15},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\catJAM.tga"] = {["nFrames"] = 60, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 10},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\ratJAM.tga"] = {["nFrames"] = 16, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=512, ["framerate"] = 15},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\BTTV+FFZ\\haHAA.tga"] = {["nFrames"] = 14, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=512, ["framerate"] = 34},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\PepeMeltdown.tga"] = {["nFrames"] = 10, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=512, ["framerate"] = 34},
