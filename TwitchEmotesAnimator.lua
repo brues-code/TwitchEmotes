@@ -1,8 +1,8 @@
 -- Animated emotes are sprite sheets; TwitchEmotes_animation_metadata
 -- (Emotes.lua) maps each sheet's texture path to its frame layout. ClassicAPI's
 -- inline-texture renderer supports the extended
--- |Tpath:w:h:0:0:imgW:imgH:0:frameW:top:bottom|t form (sprite-sheet crop), so we
--- animate by re-SetText-ing each visible FontString ~30fps with the current
+-- |Tpath:w:h:0:0:imgW:imgH:left:right:top:bottom|t form (sprite-sheet crop), so
+-- we animate by re-SetText-ing each visible FontString ~30fps with the current
 -- frame's crop. On 1.12 a ScrollingMessageFrame's visible lines are real
 -- CSimpleFontStrings exposed as the ChatFrame's FontString regions, so they can
 -- be rewritten in place — the same way the retail TwitchEmotesAnimator does it.
