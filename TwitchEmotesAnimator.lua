@@ -1,4 +1,4 @@
--- Animated emotes are vertical sprite sheets; TwitchEmotes_animation_metadata
+-- Animated emotes are sprite sheets; TwitchEmotes_animation_metadata
 -- (Emotes.lua) maps each sheet's texture path to its frame layout. ClassicAPI's
 -- inline-texture renderer supports the extended
 -- |Tpath:w:h:0:0:imgW:imgH:0:frameW:top:bottom|t form (sprite-sheet crop), so we
@@ -21,18 +21,30 @@ local function GetCurrentFrameNum(animdata)
     return math.floor((TWITCHEMOTES_T * animdata.framerate) % animdata.nFrames)
 end
 
+-- Frames run row-major across however many columns the sheet is wide. The
+-- client caps a texture at 1024px in either dimension (nothing in its own art
+-- exceeds it) and squeezes anything larger on load, so the longest animations
+-- are packed as two 32px columns rather than one over-tall strip.
+local function GetFrameRect(animdata, framenum)
+    local cols = math.floor(animdata.imageWidth / animdata.frameWidth)
+    if cols < 1 then cols = 1 end
+    local left = (framenum % cols) * animdata.frameWidth
+    local top = math.floor(framenum / cols) * animdata.frameHeight
+    return left, left + animdata.frameWidth, top, top + animdata.frameHeight
+end
+
 -- Crop a Texture (not inline text) to its animdata's current frame.
 local function CropToCurrentFrame(tex, animdata)
-    local top = GetCurrentFrameNum(animdata) * animdata.frameHeight / animdata.imageHeight
-    tex:SetTexCoord(0, 1, top, top + animdata.frameHeight / animdata.imageHeight)
+    local left, right, top, bottom = GetFrameRect(animdata, GetCurrentFrameNum(animdata))
+    tex:SetTexCoord(left / animdata.imageWidth, right / animdata.imageWidth,
+                    top / animdata.imageHeight, bottom / animdata.imageHeight)
 end
 
 local function BuildFrameString(imagepath, animdata, framenum, w, h)
-    local top = framenum * animdata.frameHeight
-    local bottom = top + animdata.frameHeight
+    local left, right, top, bottom = GetFrameRect(animdata, framenum)
     return "|T" .. imagepath .. ":" .. w .. ":" .. h .. ":0:0:" ..
-           animdata.imageWidth .. ":" .. animdata.imageHeight .. ":0:" ..
-           animdata.frameWidth .. ":" .. top .. ":" .. bottom .. "|t"
+           animdata.imageWidth .. ":" .. animdata.imageHeight .. ":" ..
+           left .. ":" .. right .. ":" .. top .. ":" .. bottom .. "|t"
 end
 
 -- escape the pattern-magic chars that can appear in an emote escape (paths use

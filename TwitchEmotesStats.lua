@@ -84,7 +84,8 @@ local function setTopEmote(tex, emote)
     -- store animdata so the animator can crop frames; frame 0 as the base
     tex.animdata = tga and TwitchEmotes_animation_metadata and TwitchEmotes_animation_metadata[tga]
     if tex.animdata then
-        tex:SetTexCoord(0, 1, 0, tex.animdata.frameHeight / tex.animdata.imageHeight)
+        tex:SetTexCoord(0, tex.animdata.frameWidth / tex.animdata.imageWidth,
+                        0, tex.animdata.frameHeight / tex.animdata.imageHeight)
     else
         tex:SetTexCoord(0, 1, 0, 1)
     end

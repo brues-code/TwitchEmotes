@@ -158,7 +158,8 @@ local function showPopup(eb, results)
                 -- animated emote sheets crop to a frame; the animator advances it
                 b.animdata = TwitchEmotes_animation_metadata and TwitchEmotes_animation_metadata[tex]
                 if b.animdata then
-                    b.ico:SetTexCoord(0, 1, 0, b.animdata.frameHeight / b.animdata.imageHeight)
+                    b.ico:SetTexCoord(0, b.animdata.frameWidth / b.animdata.imageWidth,
+                                      0, b.animdata.frameHeight / b.animdata.imageHeight)
                 else
                     b.ico:SetTexCoord(0, 1, 0, 1)
                 end
