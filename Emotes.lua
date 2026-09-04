@@ -3746,7 +3746,7 @@ defaultpack={
 	[":xdd:"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\xdd.tga:28:28",
 	[":meow:"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\meow.tga:28:28:0:0:64:512:0:32:0:32",
 	["HUHH"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\HUHH.tga:28:28:0:0:64:1024:0:32:0:32",
-	["RIPBOZO"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\RIPBOZO.tga:28:28:0:0:64:512:0:32:0:32",
+	["RIPBOZO"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\RIPBOZO.tga:28:28:0:0:128:1024:0:32:0:32",
 	["evilcat"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\evilcat.tga:28:28",
 	["bufeY"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\bufeY.tga:28:28",
 	["deanWink"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\deanWink.tga:28:28:0:0:32:512:0:32:0:32",
@@ -4265,6 +4265,7 @@ defaultpack={
 	["omgBruh"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\omgBruh.tga:28:28:0:0:64:1024:0:32:0:32",
 	["AINTNOWAY"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\AINTNOWAY.tga:28:28:0:0:128:1024:0:32:0:32",
 	[":Cinema:"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Cinema.tga:28:74:0:0:128:32:0:85:0:32",
+	["lebronJAM"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\lebronJAM.tga:28:28:0:0:128:1024:0:32:0:32",
 
   };
   emoticons={
@@ -8940,6 +8941,7 @@ defaultpack={
 	["omgBruh"]="omgBruh",
 	["AINTNOWAY"]="AINTNOWAY",
 	[":Cinema:"]=":Cinema:",
+	["lebronJAM"]="lebronJAM",
 
   };
 
@@ -9017,7 +9019,6 @@ TwitchEmotes_animation_metadata = {
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\HYPEROMEGAPOGGERSCRAZY.tga"] = {["nFrames"] = 2, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=64, ["framerate"] = 15},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\meow.tga"] = {["nFrames"] = 24, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=512, ["framerate"] = 11},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\HUHH.tga"] = {["nFrames"] = 47, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 15},
-	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\RIPBOZO.tga"] = {["nFrames"] = 28, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=512, ["framerate"] = 13},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoStrong.tga"] = {["nFrames"] = 4, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=128, ["framerate"] = 14},["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoHorse.tga"] = {["nFrames"] = 13, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=512, ["framerate"] = 40},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoPolice.tga"] = {["nFrames"] = 4, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=128, ["framerate"] = 14},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\HYPERYOGGERS.tga"] = {["nFrames"] = 2,["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=64, ["framerate"] = 10},
@@ -9062,4 +9063,6 @@ TwitchEmotes_animation_metadata = {
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\AlienPls.tga"] = {["nFrames"] = 128, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=128, ["imageHeight"]=1024, ["framerate"] = 20},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\omgBruh.tga"] = {["nFrames"] = 60, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 10},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\AINTNOWAY.tga"] = {["nFrames"] = 122, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=128, ["imageHeight"]=1024, ["framerate"] = 20},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\lebronJAM.tga"] = {["nFrames"] = 121, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=128, ["imageHeight"]=1024, ["framerate"] = 13},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\RIPBOZO.tga"] = {["nFrames"] = 86, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=128, ["imageHeight"]=1024, ["framerate"] = 17},
 }
