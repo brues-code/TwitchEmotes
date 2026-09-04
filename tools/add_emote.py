@@ -84,6 +84,11 @@ def load_frames(blob):
         fitted.paste(scaled, ((cw - scaled.width) // 2, (ch - scaled.height) // 2))
         frames.append(fitted)
         durations.append(page.info.get('duration') or 0)
+    # A GIF delay under 20ms means "as fast as possible"; browsers clamp it to
+    # 100ms, so that is the speed the emote actually plays at where people see
+    # it. Taken literally, a sheet of zero-delay frames looks like a 0-second
+    # animation and collapses to one frame.
+    durations = [d if d >= 20 else 100 for d in durations]
     return frames, durations, (cw, ch)
 
 
