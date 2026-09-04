@@ -4258,6 +4258,8 @@ defaultpack={
 	["blobDance"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\blobDance.tga:28:28:0:0:64:512:0:32:0:32",
 	["peepoTalk"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoTalk.tga:28:28:0:0:32:512:0:32:0:32",
 	["HyperMpreg"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\HyperMpreg.tga:28:28",
+	["ricardoFlick"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\ricardoFlick.tga:28:28:0:0:128:1024:0:32:0:32",
+	["popCat"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\popCat.tga:28:28:0:0:32:64:0:32:0:32",
 
   };
   emoticons={
@@ -8926,6 +8928,8 @@ defaultpack={
 	["blobDance"]="blobDance",
 	["peepoTalk"]="peepoTalk",
 	["HyperMpreg"]="HyperMpreg",
+	["ricardoFlick"]="ricardoFlick",
+	["popCat"]="popCat",
 
   };
 
@@ -9041,4 +9045,6 @@ TwitchEmotes_animation_metadata = {
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\blobDance.tga"] = {["nFrames"] = 22, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=512, ["framerate"] = 30},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoClap.tga"] = {["nFrames"] = 2, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=64, ["framerate"] = 10},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoTalk.tga"] = {["nFrames"] = 16, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=512, ["framerate"] = 10},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\ricardoFlick.tga"] = {["nFrames"] = 128, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=128, ["imageHeight"]=1024, ["framerate"] = 25},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\popCat.tga"] = {["nFrames"] = 2, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=64, ["framerate"] = 10},
 }
