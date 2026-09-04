@@ -3997,7 +3997,7 @@ defaultpack={
 	["Bedge"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\Bedge.tga:28:28",
 	["PAUSERS"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\PAUSERS.tga:28:28",
 	["WICKED"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\WICKED.tga:28:28:0:0:32:128:0:32:0:32",
-	["peepoClap"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoClap.tga:28:28",
+	["peepoClap"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoClap.tga:28:28:0:0:32:64:0:32:0:32",
 	["COPIUM"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\COPIUM.tga:28:28",
 	[":copium:"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\needcopium.tga:28:28",
 	["Copege"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\Copege.tga:28:28",
@@ -9035,4 +9035,5 @@ TwitchEmotes_animation_metadata = {
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepofeet.tga"] = {["nFrames"] = 3, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=128, ["framerate"] = 15},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\Nerdge.tga"] = {["nFrames"] = 37, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 12},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\blobDance.tga"] = {["nFrames"] = 22, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=512, ["framerate"] = 30},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoClap.tga"] = {["nFrames"] = 2, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=64, ["framerate"] = 10},
 }
