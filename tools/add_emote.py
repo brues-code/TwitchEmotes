@@ -30,7 +30,8 @@ import urllib.request
 from PIL import Image, ImageSequence
 
 CDN = 'https://cdn.betterttv.net/emote/%s/%s'
-FRAME = 32               # frame size in the sheet; emotes render at 28x28
+FRAME = 32               # cell height in the sheet; a wide emote's cell is wider
+DISPLAY = 28             # rendered height in a chat line
 MAX_TEXTURE = 1024       # client cap, per side
 MAX_ASPECT = 16          # see layout(): skinnier than this and nothing draws
 MAX_COLS = 4             # 4 * 32 = 128px wide, 128 frames at most
@@ -55,21 +56,35 @@ def download(eid):
     sys.exit('could not download emote %s: %s' % (eid, last))
 
 
+def cell_size(source):
+    """Frame cell for a source image: 32 tall, as wide as its aspect wants.
+
+    A wide emote squeezed into a square cell renders as a letterboxed sliver
+    with transparent bands, so the cell follows the source instead and the
+    escape carries a matching display size.
+    """
+    w, h = source
+    width = max(1, int(round(FRAME * w / float(h))))
+    if abs(width - FRAME) <= 1:
+        width = FRAME                      # square enough; keep the common path
+    return width, FRAME
+
+
 def load_frames(blob):
-    """Frames as 32x32 RGBA, plus each frame's display duration in ms."""
+    """Frames at the source's cell size, plus each frame's duration in ms."""
     from io import BytesIO
     im = Image.open(BytesIO(blob))
+    cw, ch = cell_size(im.size)
     frames, durations = [], []
     for page in ImageSequence.Iterator(im):
         rgba = page.convert('RGBA')
-        fitted = Image.new('RGBA', (FRAME, FRAME), (0, 0, 0, 0))
+        fitted = Image.new('RGBA', (cw, ch), (0, 0, 0, 0))
         scaled = rgba.copy()
-        scaled.thumbnail((FRAME, FRAME), Image.LANCZOS)
-        fitted.paste(scaled, ((FRAME - scaled.width) // 2,
-                              (FRAME - scaled.height) // 2))
+        scaled.thumbnail((cw, ch), Image.LANCZOS)
+        fitted.paste(scaled, ((cw - scaled.width) // 2, (ch - scaled.height) // 2))
         frames.append(fitted)
         durations.append(page.info.get('duration') or 0)
-    return frames, durations
+    return frames, durations, (cw, ch)
 
 
 TICKER_FPS = 30  # TwitchEmotesAnimator advances frames on a ~30fps ticker
@@ -107,24 +122,35 @@ def resample(durations, budget):
     return fps, indices
 
 
-def layout(count):
-    """Smallest column count giving a texture the client can actually sample.
+def pot(n):
+    v = 1
+    while v < n:
+        v *= 2
+    return v
+
+
+def layout(count, cell):
+    """Column count and texture size the client can actually sample.
 
     Two limits, both found the hard way: no side may exceed 1024, and the sheet
     may not be skinnier than 16:1 - a 32x1024 strip (32:1) draws nothing at all,
     while the same frames as 64x512 draw fine. So a run longer than 16 frames
     goes to two columns rather than growing the strip.
+
+    A non-square cell stays single-column: the animator derives its column count
+    as imageWidth / frameWidth, which only holds when the cell tiles the texture
+    width exactly.
     """
-    for cols in (1, 2, 4):
-        width = cols * FRAME
+    cw, ch = cell
+    for cols in ((1,) if cw != FRAME else (1, 2, 4)):
+        width = pot(cols * cw)
         rows = -(-count // cols)
-        height = FRAME
-        while height < rows * FRAME:
-            height *= 2
-        if height <= MAX_TEXTURE and height <= width * MAX_ASPECT:
-            return cols, height
-    sys.exit('%d frames do not fit a sheet within %dpx and %d:1'
-             % (count, MAX_TEXTURE, MAX_ASPECT))
+        height = pot(rows * ch)
+        if (max(width, height) <= MAX_TEXTURE and
+                height <= width * MAX_ASPECT and width <= height * MAX_ASPECT):
+            return cols, width, height
+    sys.exit('%d frames of %dx%d do not fit a sheet within %dpx and %d:1'
+             % (count, cw, ch, MAX_TEXTURE, MAX_ASPECT))
 
 
 def write_tga(im, path):
@@ -138,13 +164,14 @@ def write_tga(im, path):
         f.write(Image.merge('RGBA', (b, g, r, a)).tobytes())
 
 
-def build_sheet(frames, indices):
+def build_sheet(frames, indices, cell):
+    cw, ch = cell
     expanded = [frames[i] for i in indices]
-    cols, height = layout(len(expanded))
-    sheet = Image.new('RGBA', (cols * FRAME, height), (0, 0, 0, 0))
+    cols, width, height = layout(len(expanded), cell)
+    sheet = Image.new('RGBA', (width, height), (0, 0, 0, 0))
     for i, frame in enumerate(expanded):
-        sheet.paste(frame, ((i % cols) * FRAME, (i // cols) * FRAME))
-    return sheet, len(expanded), cols, height
+        sheet.paste(frame, ((i % cols) * cw, (i // cols) * ch))
+    return sheet, len(expanded), cols, width, height
 
 
 def insert_before(text, anchor, line):
@@ -152,9 +179,9 @@ def insert_before(text, anchor, line):
     return text[:at] + line + '\n' + text[at:]
 
 
-def register(name, texdir, pack, sheet_info, replace=False):
+def register(name, basename, texdir, pack, cell, tex, sheet_info, replace=False):
     """Add the emote to defaultpack, emoticons, the animation table and the menu."""
-    path = 'Interface\\\\AddOns\\\\TwitchEmotes\\\\Emotes\\\\%s\\\\%s.tga' % (texdir, name)
+    path = 'Interface\\\\AddOns\\\\TwitchEmotes\\\\Emotes\\\\%s\\\\%s.tga' % (texdir, basename)
     emotes_lua = os.path.join(ROOT, 'Emotes.lua')
     src = open(emotes_lua, encoding='utf-8').read()
     known = '["%s"]=' % name in src or '["%s"] =' % name in src
@@ -162,11 +189,15 @@ def register(name, texdir, pack, sheet_info, replace=False):
         sys.exit('%s is already registered in Emotes.lua (pass --replace to '
                  'update it in place)' % name)
 
-    if sheet_info:
-        nframes, cols, height, fps = sheet_info
-        spec = '%s:28:28:0:0:%d:%d:0:%d:0:%d' % (path, cols * FRAME, height, FRAME, FRAME)
+    # The payload reads HEIGHT first, then width (ParseIcon in ClassicAPI's
+    # InlineTexture.cpp), so a wide emote is ':28:<wider>'. A square still frame
+    # needs no crop; anything else does, to pick its cell out of the texture.
+    cw, ch = cell
+    display = '%d:%d' % (DISPLAY, int(round(DISPLAY * cw / float(ch))))
+    if sheet_info or cell != (FRAME, FRAME):
+        spec = '%s:%s:0:0:%d:%d:0:%d:0:%d' % (path, display, tex[0], tex[1], cw, ch)
     else:
-        spec = '%s:28:28' % path
+        spec = '%s:%s' % (path, display)
 
     if known:
         # Only the texture spec changes; the emoticons entry and the menu
@@ -189,10 +220,11 @@ def register(name, texdir, pack, sheet_info, replace=False):
     # A sheet needs an animation entry; a static texture must not have one.
     src = re.sub(r'\t\["%s"\] = \{\["nFrames"\][^\n]*\n' % re.escape(path), '', src)
     if sheet_info:
+        nframes, fps = sheet_info
         entry = ('\t["%s"] = {["nFrames"] = %d, ["frameWidth"] = %d, '
                  '["frameHeight"] = %d, ["imageWidth"]=%d, ["imageHeight"]=%d, '
                  '["framerate"] = %d},' %
-                 (path, nframes, FRAME, FRAME, cols * FRAME, height, fps))
+                 (path, nframes, cw, ch, tex[0], tex[1], fps))
         src = src.rstrip('\n')
         assert src.endswith('}'), 'unexpected end of Emotes.lua'
         src = src[:-1] + entry + '\n}\n'
@@ -226,6 +258,8 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('emote', help='BetterTTV emote id or URL')
     ap.add_argument('name', help='chat trigger word, e.g. PepeCool')
+    ap.add_argument('--file', help='texture basename, when the trigger word is not a '
+                                   'legal filename (:Cinema: -> --file Cinema)')
     ap.add_argument('--dir', default='Custom', help='folder under Emotes/ (default: Custom)')
     ap.add_argument('--pack', default='Custom', help='minimap menu pack (default: Custom)')
     ap.add_argument('--replace', action='store_true',
@@ -235,27 +269,34 @@ def main():
 
     if not re.match(r'^[%:\w]+$', args.name):
         sys.exit('name must be a plain word or :token: - got %r' % args.name)
+    basename = args.file or args.name
+    if not re.match(r'^\w+$', basename):
+        sys.exit('%r is not a legal filename; pass --file' % basename)
 
-    frames, durations = load_frames(download(emote_id(args.emote)))
-    tga = os.path.join(ROOT, 'Emotes', args.dir, args.name + '.tga')
+    frames, durations, cell = load_frames(download(emote_id(args.emote)))
+    tga = os.path.join(ROOT, 'Emotes', args.dir, basename + '.tga')
+    shape = '%dx%d cell' % cell if cell != (FRAME, FRAME) else 'square'
 
     if len(frames) == 1:
-        sheet, info = frames[0], None
-        print('%s: static 32x32' % args.name)
+        cols, tw, th = layout(1, cell)
+        sheet = Image.new('RGBA', (tw, th), (0, 0, 0, 0))
+        sheet.paste(frames[0], (0, 0))
+        info = None
+        print('%s: static, %s in a %dx%d texture' % (args.name, shape, tw, th))
     else:
         fps, indices = resample(durations, MAX_COLS * (MAX_TEXTURE // FRAME))
-        sheet, nframes, cols, height = build_sheet(frames, indices)
-        info = (nframes, cols, height, fps)
+        sheet, nframes, cols, tw, th = build_sheet(frames, indices, cell)
+        info = (nframes, fps)
         print('%s: %d source frames (%.2fs) -> %d frames at %dfps (%.2fs, '
-              '%d of the source frames kept), %dx%d sheet in %d column(s)' %
+              '%d of the source frames kept), %s, %dx%d sheet in %d column(s)' %
               (args.name, len(frames), sum(durations) / 1000.0, nframes, fps,
-               nframes / float(fps), len(set(indices)), cols * FRAME, height, cols))
+               nframes / float(fps), len(set(indices)), shape, tw, th, cols))
 
     if args.dry_run:
         print('dry run: would write %s' % os.path.relpath(tga, ROOT))
         return
     write_tga(sheet, tga)
-    register(args.name, args.dir, args.pack, info, args.replace)
+    register(args.name, basename, args.dir, args.pack, cell, (tw, th), info, args.replace)
     print('wrote %s and %s' % (os.path.relpath(tga, ROOT),
                                'updated its registration' if args.replace
                                else 'registered it in the %s pack' % args.pack))
