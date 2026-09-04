@@ -13,12 +13,14 @@ Two client constraints drive the conversion:
     longer than 32 frames is packed row-major across several 32px columns
     rather than one over-tall strip. TwitchEmotesAnimator derives the column
     count from imageWidth / frameWidth.
-  * The animator plays frames at one constant rate, but GIFs hold individual
-    frames for different lengths. Uneven delays are expanded into repeated
-    frames at whichever integer rate reproduces the original timing most
-    closely within the frame budget.
+  * The animator plays frames at one constant rate off a ~30fps ticker, but a
+    GIF holds each frame for as long as it likes. The source timeline is
+    resampled at a constant rate instead: a long hold repeats, and a source
+    faster than the ticker (or too long for the frame budget) drops frames.
+    The loop keeps its original duration either way.
 """
 import argparse
+import bisect
 import os
 import re
 import struct
@@ -30,6 +32,7 @@ from PIL import Image, ImageSequence
 CDN = 'https://cdn.betterttv.net/emote/%s/%s'
 FRAME = 32               # frame size in the sheet; emotes render at 28x28
 MAX_TEXTURE = 1024       # client cap, per side
+MAX_ASPECT = 16          # see layout(): skinnier than this and nothing draws
 MAX_COLS = 4             # 4 * 32 = 128px wide, 128 frames at most
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -69,44 +72,59 @@ def load_frames(blob):
     return frames, durations
 
 
-TIMING_TOLERANCE = 0.05  # 5% drift over a loop is not perceptible
+TICKER_FPS = 30  # TwitchEmotesAnimator advances frames on a ~30fps ticker
 
 
-def pick_framerate(durations, budget):
-    """Integer fps whose repeated frames reproduce the source timing.
+def resample(durations, budget):
+    """Sample the source timeline at a constant rate the animator can play.
 
-    Returns (fps, repeats). Every frame is shown at least once, so a rate too
-    slow to represent the shortest delay simply rounds it up. Among the rates
-    that hold the loop length within tolerance, the one needing the fewest
-    frames wins - a faster rate can always match the duration more exactly, but
-    it pays for that in texture size.
+    Returns (fps, indices): which source frame to show on each tick. Sampling
+    handles both directions - a frame held longer than a tick repeats, and a
+    source faster than the ticker (or too long for the frame budget) drops
+    frames. Either way the loop keeps the source's duration, which matters more
+    than showing every frame: nothing above the ticker rate can be displayed
+    anyway.
     """
-    total = sum(durations) / 1000.0
-    candidates = []
-    for fps in range(1, 31):
-        repeats = [max(1, int(round(d * fps / 1000.0))) for d in durations]
-        if sum(repeats) > budget:
-            continue
-        error = abs(sum(repeats) / float(fps) - total)
-        candidates.append((error, sum(repeats), fps, repeats))
-    if not candidates:
+    total = sum(durations)
+    if not total:
+        sys.exit('animation has no frame delays to time it by')
+    shortest = min(d for d in durations if d > 0)
+    fps = min(TICKER_FPS, max(1, int(round(1000.0 / shortest))))
+    while fps > 1 and int(round(total * fps / 1000.0)) > budget:
+        fps -= 1
+    count = max(1, int(round(total * fps / 1000.0)))
+    if count > budget:
         sys.exit('animation does not fit in %d frames' % budget)
-    tolerance = max(total * TIMING_TOLERANCE, 0.05)
-    within = [c for c in candidates if c[0] <= tolerance]
-    best = min(within or candidates, key=lambda c: (c[1], c[0]))
-    return best[2], best[3]
+
+    ends, acc = [], 0
+    for d in durations:
+        acc += d
+        ends.append(acc)
+    indices = []
+    for tick in range(count):
+        at = (tick + 0.5) * total / count      # middle of the tick
+        indices.append(min(bisect.bisect_left(ends, at), len(durations) - 1))
+    return fps, indices
 
 
 def layout(count):
-    """Smallest column count whose rows fit the texture cap."""
+    """Smallest column count giving a texture the client can actually sample.
+
+    Two limits, both found the hard way: no side may exceed 1024, and the sheet
+    may not be skinnier than 16:1 - a 32x1024 strip (32:1) draws nothing at all,
+    while the same frames as 64x512 draw fine. So a run longer than 16 frames
+    goes to two columns rather than growing the strip.
+    """
     for cols in (1, 2, 4):
+        width = cols * FRAME
         rows = -(-count // cols)
-        if rows * FRAME <= MAX_TEXTURE:
-            height = FRAME
-            while height < rows * FRAME:
-                height *= 2
+        height = FRAME
+        while height < rows * FRAME:
+            height *= 2
+        if height <= MAX_TEXTURE and height <= width * MAX_ASPECT:
             return cols, height
-    sys.exit('%d frames exceed the %dpx texture cap' % (count, MAX_TEXTURE))
+    sys.exit('%d frames do not fit a sheet within %dpx and %d:1'
+             % (count, MAX_TEXTURE, MAX_ASPECT))
 
 
 def write_tga(im, path):
@@ -120,10 +138,8 @@ def write_tga(im, path):
         f.write(Image.merge('RGBA', (b, g, r, a)).tobytes())
 
 
-def build_sheet(frames, repeats):
-    expanded = []
-    for frame, n in zip(frames, repeats):
-        expanded.extend([frame] * n)
+def build_sheet(frames, indices):
+    expanded = [frames[i] for i in indices]
     cols, height = layout(len(expanded))
     sheet = Image.new('RGBA', (cols * FRAME, height), (0, 0, 0, 0))
     for i, frame in enumerate(expanded):
@@ -227,13 +243,13 @@ def main():
         sheet, info = frames[0], None
         print('%s: static 32x32' % args.name)
     else:
-        fps, repeats = pick_framerate(durations, MAX_COLS * (MAX_TEXTURE // FRAME))
-        sheet, nframes, cols, height = build_sheet(frames, repeats)
+        fps, indices = resample(durations, MAX_COLS * (MAX_TEXTURE // FRAME))
+        sheet, nframes, cols, height = build_sheet(frames, indices)
         info = (nframes, cols, height, fps)
-        print('%s: %d source frames (%.2fs) -> %d frames at %dfps (%.2fs), '
-              '%dx%d sheet in %d column(s)' %
+        print('%s: %d source frames (%.2fs) -> %d frames at %dfps (%.2fs, '
+              '%d of the source frames kept), %dx%d sheet in %d column(s)' %
               (args.name, len(frames), sum(durations) / 1000.0, nframes, fps,
-               nframes / float(fps), cols * FRAME, height, cols))
+               nframes / float(fps), len(set(indices)), cols * FRAME, height, cols))
 
     if args.dry_run:
         print('dry run: would write %s' % os.path.relpath(tga, ROOT))

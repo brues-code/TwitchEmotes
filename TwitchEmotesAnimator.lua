@@ -21,10 +21,11 @@ local function GetCurrentFrameNum(animdata)
     return math.floor((TWITCHEMOTES_T * animdata.framerate) % animdata.nFrames)
 end
 
--- Frames run row-major across however many columns the sheet is wide. The
--- client caps a texture at 1024px in either dimension (nothing in its own art
--- exceeds it) and squeezes anything larger on load, so the longest animations
--- are packed as two 32px columns rather than one over-tall strip.
+-- Frames run row-major across however many columns the sheet is wide. Two
+-- client limits force that: no texture side may exceed 1024, and a texture
+-- skinnier than 16:1 doesn't draw at all -- a 32x1024 strip renders nothing,
+-- while the same frames as 64x512 render fine. So a run longer than 16 frames
+-- is packed in columns rather than as one tall strip.
 local function GetFrameRect(animdata, framenum)
     local cols = math.floor(animdata.imageWidth / animdata.frameWidth)
     if cols < 1 then cols = 1 end
@@ -40,9 +41,8 @@ local function CropToCurrentFrame(tex, animdata)
                     top / animdata.imageHeight, bottom / animdata.imageHeight)
 end
 
--- The engine splits the payload on ':' and atoi's each field, so a coordinate
--- carrying a decimal point silently truncates and crops the wrong rect (a
--- fractional framerate is enough to leak one in). Format them as integers.
+-- The crop bounds are texel offsets, so emit them as integers rather than
+-- letting a float from the frame maths stringify into the payload.
 local function BuildFrameString(imagepath, animdata, framenum, w, h)
     local left, right, top, bottom = GetFrameRect(animdata, framenum)
     return ("|T%s:%d:%d:0:0:%d:%d:%d:%d:%d:%d|t"):format(imagepath, w, h,
