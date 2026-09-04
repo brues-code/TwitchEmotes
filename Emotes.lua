@@ -4257,6 +4257,7 @@ defaultpack={
 	["typegBricked"] = "Interface\\AddOns\\TwitchEmotes\\Emotes\\typeg\\typegBricked.tga:28:28",
 	["blobDance"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\blobDance.tga:28:28:0:0:64:512:0:32:0:32",
 	["peepoTalk"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Pepes\\peepoTalk.tga:28:28:0:0:32:512:0:32:0:32",
+	["HyperMpreg"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\HyperMpreg.tga:28:28",
 
   };
   emoticons={
@@ -8924,6 +8925,7 @@ defaultpack={
 	[":twoofakind:"]=":twoofakind:",
 	["blobDance"]="blobDance",
 	["peepoTalk"]="peepoTalk",
+	["HyperMpreg"]="HyperMpreg",
 
   };
 
