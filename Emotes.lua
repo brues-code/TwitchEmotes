@@ -4269,6 +4269,7 @@ defaultpack={
 	["DONOTCUM"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\DONOTCUM.tga:28:28:0:0:64:1024:0:32:0:32",
 	[":Awkward:"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Awkward.tga:28:28:0:0:128:1024:0:32:0:32",
 	["catKISS"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\catKISS.tga:28:28:0:0:64:1024:0:32:0:32",
+	["Maaaaan"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Maaaaan.tga:28:28",
 
   };
   emoticons={
@@ -8948,6 +8949,7 @@ defaultpack={
 	["DONOTCUM"]="DONOTCUM",
 	[":Awkward:"]=":Awkward:",
 	["catKISS"]="catKISS",
+	["Maaaaan"]="Maaaaan",
 
   };
 
