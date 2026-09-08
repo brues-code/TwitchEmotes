@@ -1,4 +1,5 @@
 package-as: TwitchEmotes
+changelog-title: TwitchEmotes
 
 ignore:
   - .luarc.json
