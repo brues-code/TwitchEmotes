@@ -7,12 +7,12 @@
 Downloads the emote, converts it to a texture the 1.12 client can decode, and
 registers it in Emotes.lua (and in the minimap dropdown's pack list).
 
-Two client constraints drive the conversion:
+Two constraints drive the conversion:
 
-  * Textures are capped at 1024px per side and power-of-two, so an animation
-    longer than 32 frames is packed row-major across several 32px columns
-    rather than one over-tall strip. TwitchEmotesAnimator derives the column
-    count from imageWidth / frameWidth.
+  * A sheet may not exceed 1024px per side, so an animation longer than 32
+    frames is packed row-major across several 32px columns rather than one
+    over-tall strip. TwitchEmotesAnimator derives the column count from
+    imageWidth / frameWidth.
   * The animator plays frames at one constant rate off a ~30fps ticker, but a
     GIF holds each frame for as long as it likes. The source timeline is
     resampled at a constant rate instead: a long hold repeats, and a source
@@ -32,8 +32,7 @@ from PIL import Image, ImageSequence
 CDN = 'https://cdn.betterttv.net/emote/%s/%s'
 FRAME = 32               # cell height in the sheet; a wide emote's cell is wider
 DISPLAY = 28             # rendered height in a chat line
-MAX_TEXTURE = 1024       # client cap, per side
-MAX_ASPECT = 16          # see layout(): skinnier than this and nothing draws
+MAX_TEXTURE = 1024       # side of the decode scratch, per side
 MAX_COLS = 4             # 4 * 32 = 128px wide, 128 frames at most
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -127,20 +126,19 @@ def resample(durations, budget):
     return fps, indices
 
 
-def pot(n):
-    v = 1
-    while v < n:
-        v *= 2
-    return v
-
-
 def layout(count, cell):
-    """Column count and texture size the client can actually sample.
+    """Column count and texture size for `count` frames.
 
-    Two limits, both found the hard way: no side may exceed 1024, and the sheet
-    may not be skinnier than 16:1 - a 32x1024 strip (32:1) draws nothing at all,
-    while the same frames as 64x512 draw fine. So a run longer than 16 frames
-    goes to two columns rather than growing the strip.
+    ClassicAPI's dimension gate lifts 1.12's power-of-two rule and grows the
+    decode scratch to fit, so the sheet is sized to its frames exactly. One
+    limit is left - the scratch's own side, 1024 - which a run longer than 32
+    frames outgrows, so it wraps into further 32px columns.
+
+    (A sheet skinnier than 16:1 used to draw nothing, which forced columns much
+    sooner. That was never a client rule: VanillaHelpers grew the texture
+    recycle pool to 6x6 but left the index stride at 5, so a 32x1024 strip
+    collided with a 64x32 bucket and got handed back the wrong texture. The gate
+    rewrites both index sites to stride 6.)
 
     A non-square cell stays single-column: the animator derives its column count
     as imageWidth / frameWidth, which only holds when the cell tiles the texture
@@ -148,14 +146,13 @@ def layout(count, cell):
     """
     cw, ch = cell
     for cols in ((1,) if cw != FRAME else (1, 2, 4)):
-        width = pot(cols * cw)
+        width = cols * cw
         rows = -(-count // cols)
-        height = pot(rows * ch)
-        if (max(width, height) <= MAX_TEXTURE and
-                height <= width * MAX_ASPECT and width <= height * MAX_ASPECT):
+        height = rows * ch
+        if max(width, height) <= MAX_TEXTURE:
             return cols, width, height
-    sys.exit('%d frames of %dx%d do not fit a sheet within %dpx and %d:1'
-             % (count, cw, ch, MAX_TEXTURE, MAX_ASPECT))
+    sys.exit('%d frames of %dx%d do not fit a sheet within %dpx'
+             % (count, cw, ch, MAX_TEXTURE))
 
 
 def write_tga(im, path):

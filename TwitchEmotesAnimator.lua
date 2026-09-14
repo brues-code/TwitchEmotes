@@ -21,11 +21,11 @@ local function GetCurrentFrameNum(animdata)
     return math.floor((TWITCHEMOTES_T * animdata.framerate) % animdata.nFrames)
 end
 
--- Frames run row-major across however many columns the sheet is wide. Two
--- client limits force that: no texture side may exceed 1024, and a texture
--- skinnier than 16:1 doesn't draw at all -- a 32x1024 strip renders nothing,
--- while the same frames as 64x512 render fine. So a run longer than 16 frames
--- is packed in columns rather than as one tall strip.
+-- Frames run row-major across however many columns the sheet is wide, since a
+-- run longer than 32 frames outgrows the 1024px decode scratch as one strip.
+-- Older sheets are packed more densely than that: before ClassicAPI's texture
+-- dimension gate a sheet skinnier than 16:1 drew nothing, so runs wrapped at 16
+-- frames. Deriving the column count from the sheet handles either.
 local function GetFrameRect(animdata, framenum)
     local cols = math.floor(animdata.imageWidth / animdata.frameWidth)
     if cols < 1 then cols = 1 end
