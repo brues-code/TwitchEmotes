@@ -49,8 +49,13 @@ local WIN_H     = 516
 
 local FALLBACK_TEX = "Interface\\AddOns\\TwitchEmotes\\Emotes\\1337.tga"
 
-local BORDER_TEX = "Interface\\ItemSocketingFrame\\UI-EngineeringSockets"
-local BORDER = { left = 0.015625, right = 0.6875, top = 0.41210938, bottom = 0.49609375 }
+-- Same panel styling as the autocomplete popup.
+local FEATURED_BACKDROP = {
+    bgFile   = "Interface\\Buttons\\WHITE8X8",
+    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+    tile = true, tileSize = 8, edgeSize = 8,
+    insets = { left = 3, right = 3, top = 3, bottom = 3 },
+}
 
 local sentKeys     = {}
 local seenKeys     = {}
@@ -184,15 +189,18 @@ local function makeFeatured(f, label, centerX)
     title:SetPoint("CENTER", f, "TOPLEFT", centerX, -52)
     title:SetText(label)
 
-    local border = f:CreateTexture(nil, "ARTWORK")
-    border:SetTexture(BORDER_TEX)
+    -- a frame rather than a texture, so the emote can sit on its OVERLAY layer
+    -- above the backdrop
+    local border = CreateFrame("Frame", nil, f)
     border:SetSize(86, 86)
-    border:SetTexCoord(BORDER.left, BORDER.right, BORDER.top, BORDER.bottom)
     border:SetPoint("CENTER", f, "TOPLEFT", centerX, -108)
+    border:SetBackdrop(FEATURED_BACKDROP)
+    border:SetBackdropColor(0.05, 0.05, 0.05, 0.95)
+    border:SetBackdropBorderColor(1, 1, 1, 1)
 
-    local tex = f:CreateTexture(nil, "OVERLAY")
+    local tex = border:CreateTexture(nil, "OVERLAY")
     tex:SetSize(70, 70)
-    tex:SetPoint("CENTER", f, "TOPLEFT", centerX, -108)
+    tex:SetPoint("CENTER", border, "CENTER", 0, 0)
 
     local cap = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     cap:SetPoint("CENTER", f, "TOPLEFT", centerX, -160)
@@ -212,7 +220,7 @@ local function buildWindow()
     f:SetScript("OnDragStop",  f.StopMovingOrSizing)
     f:SetFrameStrata("HIGH")
     f:SetBackdrop({
-        bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background",
         edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
         tile = true, tileSize = 32, edgeSize = 32,
         insets = { left = 11, right = 12, top = 12, bottom = 11 },
