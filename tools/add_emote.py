@@ -126,6 +126,17 @@ def resample(durations, budget):
     return fps, indices
 
 
+def max_frames(cell):
+    """Most frames `layout` can pack for this cell shape within MAX_TEXTURE.
+
+    A non-square cell stays single-column (see `layout`), so its budget is
+    shallower than a square cell's, which can spread across MAX_COLS.
+    """
+    cw, ch = cell
+    cols = MAX_COLS if cw == FRAME else 1
+    return cols * (MAX_TEXTURE // ch)
+
+
 def layout(count, cell):
     """Column count and texture size for `count` frames.
 
@@ -286,7 +297,7 @@ def main():
         info = None
         print('%s: static, %s in a %dx%d texture' % (args.name, shape, tw, th))
     else:
-        fps, indices = resample(durations, MAX_COLS * (MAX_TEXTURE // FRAME))
+        fps, indices = resample(durations, max_frames(cell))
         sheet, nframes, cols, tw, th = build_sheet(frames, indices, cell)
         info = (nframes, fps)
         print('%s: %d source frames (%.2fs) -> %d frames at %dfps (%.2fs, '
