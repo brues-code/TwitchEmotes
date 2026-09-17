@@ -4273,6 +4273,7 @@ defaultpack={
 	["Tssk"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Tssk.tga:28:28:0:0:32:416:0:32:0:32",
 	["TheVoices"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\TheVoices.tga:28:28:0:0:128:1024:0:32:0:32",
 	["SpeedLaugh"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\SpeedLaugh.tga:28:32:0:0:36:928:0:36:0:32",
+	["YouTried"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\YouTried.tga:28:28:0:0:32:576:0:32:0:32",
 
   };
   emoticons={
@@ -8956,6 +8957,7 @@ defaultpack={
 	["Tssk"]="Tssk",
 	["TheVoices"]="TheVoices",
 	["SpeedLaugh"]="SpeedLaugh",
+	["YouTried"]="YouTried",
 
   };
 
@@ -9085,4 +9087,5 @@ TwitchEmotes_animation_metadata = {
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Tssk.tga"] = {["nFrames"] = 13, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=416, ["framerate"] = 30},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\TheVoices.tga"] = {["nFrames"] = 127, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=128, ["imageHeight"]=1024, ["framerate"] = 21},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\SpeedLaugh.tga"] = {["nFrames"] = 29, ["frameWidth"] = 36, ["frameHeight"] = 32, ["imageWidth"]=36, ["imageHeight"]=928, ["framerate"] = 6},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\YouTried.tga"] = {["nFrames"] = 18, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=576, ["framerate"] = 10},
 }
