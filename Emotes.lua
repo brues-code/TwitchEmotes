@@ -4275,6 +4275,7 @@ defaultpack={
 	["SpeedLaugh"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\SpeedLaugh.tga:28:32:0:0:36:928:0:36:0:32",
 	["YouTried"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\YouTried.tga:28:28:0:0:32:576:0:32:0:32",
 	["DIESOFCRINGE"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\DIESOFCRINGE.tga:28:28:0:0:128:896:0:32:0:32",
+	["DisGonBGud"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\DisGonBGud.tga:28:28:0:0:128:1024:0:32:0:32",
 
   };
   emoticons={
@@ -8960,6 +8961,7 @@ defaultpack={
 	["SpeedLaugh"]="SpeedLaugh",
 	["YouTried"]="YouTried",
 	["DIESOFCRINGE"]="DIESOFCRINGE",
+	["DisGonBGud"]="DisGonBGud",
 
   };
 
@@ -9091,4 +9093,5 @@ TwitchEmotes_animation_metadata = {
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\SpeedLaugh.tga"] = {["nFrames"] = 29, ["frameWidth"] = 36, ["frameHeight"] = 32, ["imageWidth"]=36, ["imageHeight"]=928, ["framerate"] = 6},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\YouTried.tga"] = {["nFrames"] = 18, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=576, ["framerate"] = 10},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\DIESOFCRINGE.tga"] = {["nFrames"] = 111, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=128, ["imageHeight"]=896, ["framerate"] = 30},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\DisGonBGud.tga"] = {["nFrames"] = 125, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=128, ["imageHeight"]=1024, ["framerate"] = 25},
 }
