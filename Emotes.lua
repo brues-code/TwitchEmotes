@@ -4270,6 +4270,7 @@ defaultpack={
 	[":Awkward:"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Awkward.tga:28:28:0:0:128:1024:0:32:0:32",
 	["catKISS"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\catKISS.tga:28:28:0:0:64:1024:0:32:0:32",
 	["Maaaaan"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Maaaaan.tga:28:28",
+	["Tssk"]="Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Tssk.tga:28:28:0:0:32:416:0:32:0:32",
 
   };
   emoticons={
@@ -8950,6 +8951,7 @@ defaultpack={
 	[":Awkward:"]=":Awkward:",
 	["catKISS"]="catKISS",
 	["Maaaaan"]="Maaaaan",
+	["Tssk"]="Tssk",
 
   };
 
@@ -9076,4 +9078,5 @@ TwitchEmotes_animation_metadata = {
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\DONOTCUM.tga"] = {["nFrames"] = 46, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 25},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Awkward.tga"] = {["nFrames"] = 76, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=128, ["imageHeight"]=1024, ["framerate"] = 10},
 	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\catKISS.tga"] = {["nFrames"] = 60, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=64, ["imageHeight"]=1024, ["framerate"] = 17},
+	["Interface\\AddOns\\TwitchEmotes\\Emotes\\Custom\\Tssk.tga"] = {["nFrames"] = 13, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"]=32, ["imageHeight"]=416, ["framerate"] = 30},
 }
